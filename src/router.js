@@ -24,7 +24,7 @@ export default new Router({
       path: '/sysUser',
       name: 'sysUser',
       component: () => import('./views/SysUser.vue')
-    }
+    },
     */
     {
       path: '/',
@@ -39,6 +39,11 @@ export default new Router({
             path: '/dashboard',
             component: resolve => require(['./components/page/Dashboard.vue'], resolve),
             meta: { title: '系统首页' }
+        },
+        {
+          path: '/table',
+          component: resolve => require(['./components/page/BaseTable.vue'], resolve),
+          meta: { title: '基础表格' }
         },
         {
             path: '/404',
