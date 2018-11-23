@@ -1,14 +1,13 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
     <router-view/>
   </div>
 </template>
 
 <style lang="less">
+  @import "../static/css/main.css";
+  @import "../static/css/color-dark.css";     /*深色主题*/
+  /*
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -26,4 +25,5 @@
     }
   }
 }
+*/
 </style>
