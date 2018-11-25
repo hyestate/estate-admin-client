@@ -9,17 +9,9 @@
       </el-option>
     </el-select>
     <el-col>
-      <el-select v-model="selectedTable" @change="handleSelectTable" placeholder="请选择表名">
+      <el-select v-model="selectedTable" placeholder="请选择表名">
         <el-option
           v-for="item in tableItems"
-          :key="item"
-          :label="item"
-          :value="item">
-        </el-option>
-      </el-select>
-      <el-select v-model="selectedColumnName" @change="handleSelectColumn" placeholder="请选择字段名">
-        <el-option
-          v-for="item in columnNameItems"
           :key="item"
           :label="item"
           :value="item">
@@ -28,11 +20,11 @@
       <el-checkbox v-model="newRowSelectPriv">查询权限</el-checkbox>
       <el-checkbox v-model="newRowInsertPriv">插入权限</el-checkbox>
       <el-checkbox v-model="newRowUpdatePriv">更新权限</el-checkbox>
+      <el-checkbox v-model="newRowDeletePriv">删除权限</el-checkbox>
     </el-col>
     <el-button type="primary" @click="handleInsert">添加权限</el-button>
     <el-table :data="listItems">
       <el-table-column property="tableName" label="表名"></el-table-column>
-      <el-table-column property="columnName" label="字段名"></el-table-column>
       <el-table-column label="查询权限">
         <template scope="scope">
           <el-checkbox v-model="scope.row.Select" @change="handleChange(scope.row)">查询权限</el-checkbox>
@@ -48,6 +40,11 @@
           <el-checkbox v-model="scope.row.Update" @change="handleChange(scope.row)">更新权限</el-checkbox>
         </template>
       </el-table-column>
+      <el-table-column label="删除权限">
+        <template scope="scope">
+          <el-checkbox v-model="scope.row.Delete" @change="handleChange(scope.row)">删除权限</el-checkbox>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
           <el-button size="small" @click="handleDelete(scope.row)">删除</el-button>
@@ -57,26 +54,23 @@
   </el-row>
 </template>
 <script>
-  import globalConfig from "../../config.js"
-  import ErrorTip from '../../components/ErrorTip';
-  import gql from 'graphql-tag'
-  import VueResource from 'vue-resource'
-
+  import globalConfig from "../../../config.js"
+  import ErrorTip from '../../common/ErrorTip';
+  //import gql from 'graphql-tag'
   export default {
     data() {
       return {
         rolesItems:[],
         selectedRoleId:"",
-
         tableItems:[],
         selectedTable:"",
-        columnNameItems:[],
-        selectedColumnName:"",
-        listItems:[],
 
         newRowSelectPriv:false,
         newRowInsertPriv:false,
         newRowUpdatePriv:false,
+        newRowDeletePriv:false,
+
+        listItems:[],
       }
     },
     mounted() {
@@ -84,11 +78,19 @@
       this.fetchTableItems();
     },
     methods: {
-      tableRowClassName({row, rowIndex}) {
-        if (rowIndex%2 === 0) {
-          return 'success-row';
-        } 
-        return '';
+      fetchTableItems(){
+        let that = this;
+        this.$http.get(globalConfig.showTablesUrl, []).then((res) => {
+          if(res.status==200){
+            that.tableItems = res.body;
+          }else{
+            that.$message.error("获取表名列表失败,status:"+res.status);
+          }
+        }, (e) => {
+            console.log(e);
+            that.$message.error("获取表名列表失败,error:"+e.message);
+        });
+
       },
       handleInsert(){
         let flag=1;
@@ -100,26 +102,25 @@
           this.$message.info("请选择表名");
           return;
         }
-        if(this.selectedColumnName=="" || this.selectedColumnName==undefined){
-          this.$message.info("请选择字段名");
-          return;
-        }
-        if(!this.newRowSelectPriv && !this.newRowInsertPriv &&!this.newRowUpdatePriv){
+        if(!this.newRowSelectPriv && !this.newRowInsertPriv &&!this.newRowUpdatePriv && !this.newRowDeletePriv){
           this.$message.info("请至少选择一个权限");
           return;
         }
-        let columnPrivs = [];
+        let privs = [];
         if(this.newRowSelectPriv)
-          columnPrivs.push("Select");
+          privs.push("Select");
         if(this.newRowInsertPriv)
-          columnPrivs.push("Insert");
+          privs.push("Insert");
         if(this.newRowUpdatePriv)
-          columnPrivs.push("Update");
-        let columnPrivsStr = columnPrivs.join(",");
+          privs.push("Update");
+        if(this.newRowDeletePriv)
+          privs.push("Delete");
+        let privsStr = privs.join(",");
 
         let that = this;
+        /*
         let mutation = gql`mutation($token:String!,$item:String!){
-                        insertSysPrivsColumn(token:$token,item:$item)
+                        insertSysPrivsTable(token:$token,item:$item)
                       }`;
 
         this.$apollo.mutate({
@@ -129,12 +130,12 @@
               item:JSON.stringify({
                   roleid:this.selectedRoleId,
                   tableName:this.selectedTable,
-                  columnName:this.selectedColumnName,
-                  columnPriv:columnPrivsStr,
+                  tablePriv:privsStr,
                 }),
           },
         }).then(res => {
-          let id = res.data.insertSysPrivsColumn;
+          console.log(res);
+          let id = res.data.insertSysPrivsTable;
           that.$message({
             message: '插入数据成功',
             type: 'success'
@@ -143,18 +144,17 @@
             id:id,
             roleid:this.selectedRoleId,
             tableName:this.selectedTable,
-            columnName:this.selectedColumnName,
             Select:this.newRowSelectPriv,
             Insert:this.newRowInsertPriv,
             Update:this.newRowUpdatePriv,
+            Delete:this.newRowDeletePriv,
           };
           this.listItems.push(newItem);
-          //为了方便对一个表多个字段添加
-          //this.selectedTable="";
-          this.selectedColumnName="";
+          this.selectedTable="";
           this.newRowSelectPriv=false;
           this.newRowInsertPriv=false;
           this.newRowUpdatePriv=false;
+          this.newRowDeletePriv=false;
         }).catch(err => {
             console.log(err);
             that.$message.error('插入数据失败');
@@ -168,14 +168,16 @@
                 alert(err.message);
             }
         });
+        */
       },
       handleDelete(item){
         //每一行的数据对象
         console.log(item);
         //删除权限记录
         let that = this;
+        /*
         let mutation = gql`mutation($token:String!,$where:String!){
-                        deleteSysPrivsColumn(token:$token,where:$where)
+                        deleteSysPrivsTable(token:$token,where:$where)
                       }`;
 
         this.$apollo.mutate({
@@ -187,7 +189,6 @@
         }).then(res => {
           console.log(res);
           for(let i=0;i<that.listItems.length;i++){
-            console.log(that.listItems[i].id,item.id);
             if(that.listItems[i].id==item.id){
               that.listItems.splice(i,1);
               break;
@@ -209,24 +210,34 @@
                 that.$message.error('删除数据失败:'+err.message);
             }
         })
+        */
+      },
+      tableRowClassName({row, rowIndex}) {
+        if (rowIndex%2 === 0) {
+          return 'success-row';
+        } 
+        return '';
       },
       handleChange(item){
         //每一行的数据对象
         console.log(item);
-        let columnPrivs = [];
+        let privs = [];
         if(item["Select"])
-          columnPrivs.push("Select");
+          privs.push("Select");
         if(item["Insert"])
-          columnPrivs.push("Insert");
+          privs.push("Insert");
         if(item["Update"])
-          columnPrivs.push("Update");
-        let columnPrivsStr = columnPrivs.join(",");
+          privs.push("Update");
+        if(item["Delete"])
+          privs.push("Delete");
+        let privsStr = privs.join(",");
 
-        if(columnPrivsStr==""){
+        if(privsStr==""){
           //删除权限记录
           let that = this;
+          /*
           let mutation = gql`mutation($token:String!,$where:String!){
-                          deleteSysPrivsColumn(token:$token,where:$where)
+                          deleteSysPrivsTable(token:$token,where:$where)
                         }`;
 
           this.$apollo.mutate({
@@ -260,14 +271,15 @@
                   alert(err.message);
               }
           })
+          */
 
         }else{
           //修改权限记录
           let that = this;
+          /*
           let mutation = gql`mutation($token:String!,$update:String!,$where:String!){
-                          updateSysPrivsColumn(token:$token,update:$update,where:$where){
+                          updateSysPrivsTable(token:$token,update:$update,where:$where){
                             id,
-                            columnPriv,
                           }
                         }`;
 
@@ -275,7 +287,7 @@
             mutation: mutation,
             variables: {
                 token:globalConfig.token,
-                update:JSON.stringify({columnPriv:columnPrivsStr}),
+                update:JSON.stringify({tablePriv:privsStr}),
                 where:JSON.stringify({id:item.id}),
             },
           }).then(res => {
@@ -296,15 +308,16 @@
                   alert(err.message);
               }
           })
+          */
 
         }
       },
       handleSelectRole(selectedRoleId){
-        this.fetchPrivsColumnItems(selectedRoleId);
+        this.fetchPrivsTableItems(selectedRoleId);
       },
-      
       fetchRoleItems() {
         let that = this;
+        /*
         let query = gql`query($token:String!,$pageSize:Int!){
           sysRoles(token:$token,pageSize:$pageSize){
             count,
@@ -350,53 +363,19 @@
                 alert(err.message);
             }
         })
+        */
       },
-      fetchTableItems(){
+      fetchPrivsTableItems(roleId) {
         let that = this;
-        this.$http.get(globalConfig.showTablesUrl, []).then((res) => {
-          if(res.status==200){
-            that.tableItems = res.body;
-          }else{
-            that.$message.error("获取表名列表失败,status:"+res.status);
-          }
-        }, (e) => {
-            console.log(e);
-            that.$message.error("获取表名列表失败,error:"+e.message);
-        });
-
-      },
-      handleSelectTable(selectedTable){
-        this.fetchColumns(selectedTable);
-        this.selectedColumnName="";
-      },
-      fetchColumns(tableName){
-        let that = this;
-        this.$http.get(globalConfig.descTableUrl, {params:{table:tableName}}).then((res) => {
-          if(res.status==200){
-            that.columnNameItems = res.body;
-          }else{
-            that.$message.error("获取字段名列表失败,status:"+res.status);
-          }
-        }, (e) => {
-            console.log(e);
-            that.$message.error("获取字段名列表失败,error:"+e.message);
-        });
-
-      },
-      handleSelectColumn(selectedColumnName){
-        console.log(selectedColumnName);
-      },
-      fetchPrivsColumnItems(roleId) {
-        let that = this;
+        /*
         let query = gql`query($token:String!,$pageSize:Int!,$where:String!){
-          sysPrivsColumns(token:$token,pageSize:$pageSize,where:$where){
+          sysPrivsTables(token:$token,pageSize:$pageSize,where:$where){
             count,
-            sysPrivsColumns{
+            sysPrivsTables{
               id,
               roleid,
               tableName,
-              columnName,
-              columnPriv,
+              tablePriv,
               createdAt,
               updatedAt
             }
@@ -427,11 +406,10 @@
               let newItem = {
                 id:originItem.id,
                 tableName:originItem.tableName,
-                columnName:originItem.columnName,
-                Select:originItem.columnPriv.indexOf("Select")!=-1,
-                Insert:originItem.columnPriv.indexOf("Insert")!=-1,
-                Update:originItem.columnPriv.indexOf("Update")!=-1,
-                Delete:originItem.columnPriv.indexOf("Delete")!=-1,
+                Select:originItem.tablePriv.indexOf("Select")!=-1,
+                Insert:originItem.tablePriv.indexOf("Insert")!=-1,
+                Update:originItem.tablePriv.indexOf("Update")!=-1,
+                Delete:originItem.tablePriv.indexOf("Delete")!=-1,
               };
               that.listItems.push(newItem);
             }
@@ -449,6 +427,7 @@
                 alert(err.message);
             }
         })
+        */
       }
     },
     components: {

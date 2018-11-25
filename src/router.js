@@ -71,6 +71,11 @@ export default new Router({
           meta: { title: '字段权限管理',type:"sys_column_privs" }
         },
         {
+          path: '/new_sys_table_privs',
+          component: resolve => require(['./components/page/priv/sysTablePrivs.vue'], resolve),
+          meta: { title: '字段权限管理',type:"sys_column_privs" }
+        },
+        {
             path: '/404',
             component: resolve => require(['./components/page/404.vue'], resolve),
             meta: { title: '404' }

@@ -31,11 +31,9 @@
   </el-row>
 </template>
 <script>
-  import globalConfig from "../../config.js"
-  import ErrorTip from '../../components/ErrorTip';
-  import gql from 'graphql-tag'
-  import VueResource from 'vue-resource'
-  //import { constants } from 'http2';
+  import globalConfig from "../../../config.js"
+  import ErrorTip from '../../common/ErrorTip';
+  //import gql from 'graphql-tag'
 
   export default {
     data() {
@@ -78,6 +76,7 @@
       },
       fetchListItems(){
         let that = this;
+        /*
         let query = gql`query($token:String!,$pageSize:Int!){
           sysUserRoles(token:$token,pageSize:$pageSize){
             count,
@@ -127,6 +126,7 @@
                 alert(err.message);
             }
         })
+        */
       },
       handleInsert(){
         if(this.selectedUserId=="" || this.selectedUserId==undefined){
@@ -141,6 +141,7 @@
         console.log(this.selectedRoleId,this.selectedUserId);
         
         let that = this;
+        /*
         let mutation = gql`mutation($token:String!,$item:String!){
                         insertSysUserRole(token:$token,item:$item)
                       }`;
@@ -184,12 +185,14 @@
               that.$message.error('插入数据失败:'+err.message);
             }
         });
+        */
       },
       handleDelete(item){
         //每一行的数据对象
         console.log(item);
         //删除权限记录
         let that = this;
+        /*
         let mutation = gql`mutation($token:String!,$where:String!){
                         deleteSysUserRole(token:$token,where:$where)
                       }`;
@@ -224,10 +227,12 @@
                 that.$message.error('删除数据失败:'+err.message);
             }
         })
+        */
       },
       
       fetchRoleItems() {
         let that = this;
+        /*
         let query = gql`query($token:String!,$pageSize:Int!){
           sysRoles(token:$token,pageSize:$pageSize){
             count,
@@ -273,9 +278,11 @@
                 alert(err.message);
             }
         })
+        */
       },
       fetchUserItems(){
         let that = this;
+        /*
         let query = gql`query($token:String!,$pageSize:Int!){
           sysUsers(token:$token,pageSize:$pageSize){
             count,
@@ -321,6 +328,7 @@
                 alert(err.message);
             }
         })
+        */
 
       },
     },

@@ -74,6 +74,12 @@
                         title: '字段权限管理'
                     },
                     {
+                        icon: 'el-icon-lx-cascades',
+                        index: 'new_sys_table_privs',
+                        title: '独立表权限管理'
+                    },
+
+                    {
                         icon: 'el-icon-lx-copy',
                         index: 'tabs',
                         title: 'tab选项卡'
