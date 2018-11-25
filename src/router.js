@@ -46,6 +46,31 @@ export default new Router({
           meta: { title: '基础表格' }
         },
         {
+          path: '/sys_users',
+          component: resolve => require(['./components/page/list.vue'], resolve),
+          meta: { title: '管理员管理',type:"sys_users" }
+        },
+        {
+          path: '/sys_roles',
+          component: resolve => require(['./components/page/list.vue'], resolve),
+          meta: { title: '角色管理',type:"sys_roles" }
+        },
+        {
+          path: '/sys_user_roles',
+          component: resolve => require(['./components/page/list.vue'], resolve),
+          meta: { title: '用户角色管理',type:"sys_user_roles" }
+        },
+        {
+          path: '/sys_table_privs',
+          component: resolve => require(['./components/page/list.vue'], resolve),
+          meta: { title: '表权限管理',type:"sys_table_privs" }
+        },
+        {
+          path: '/sys_column_privs',
+          component: resolve => require(['./components/page/list.vue'], resolve),
+          meta: { title: '字段权限管理',type:"sys_column_privs" }
+        },
+        {
             path: '/404',
             component: resolve => require(['./components/page/404.vue'], resolve),
             meta: { title: '404' }

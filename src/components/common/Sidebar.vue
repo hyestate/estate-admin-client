@@ -49,6 +49,31 @@
                         title: '基础表格'
                     },
                     {
+                        icon: 'el-icon-lx-cascades',
+                        index: 'sys_users',
+                        title: '管理员管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-cascades',
+                        index: 'sys_roles',
+                        title: '角色管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-cascades',
+                        index: 'sys_user_roles',
+                        title: '用户角色管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-cascades',
+                        index: 'sys_table_privs',
+                        title: '表权限管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-cascades',
+                        index: 'sys_column_privs',
+                        title: '字段权限管理'
+                    },
+                    {
                         icon: 'el-icon-lx-copy',
                         index: 'tabs',
                         title: 'tab选项卡'
