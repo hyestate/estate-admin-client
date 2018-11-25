@@ -19,7 +19,7 @@ let listConfig = {
     modifyUrl:`${window.base_url}admin/Dataclear_common/modifyItem/visit`,//修改单条数据
     deleteUrl:`${window.base_url}admin/Dataclear_common/deleteItem/visit`,//删除单条数据
     searchConfig:[
-        {id:'1', title:'输入框类型', name:'jz_id', isAutocomplete:false, ph:'请输入卷宗ID', isMust:false, type:'input', value:{jz_id: {value:'',operator:"="}}},
+        //{id:'1', title:'输入框类型', name:'jz_id', isAutocomplete:false, ph:'请输入卷宗ID', isMust:false, type:'input', value:{jz_id: {value:'',operator:"="}}},
         {id:'2', title:'单选框类型', name:'planType', isAutocomplete:false, ph:'请选择', isMust:false, type:'radio', value:{planType: {value:'',operator:"="}}, option:[
             {label:'维持原判',value:'维持原判'},
             {label:'申请解冻',value:'申请解冻'},

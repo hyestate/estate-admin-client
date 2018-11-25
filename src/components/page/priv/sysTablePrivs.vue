@@ -21,8 +21,8 @@
       <el-checkbox v-model="newRowInsertPriv">插入权限</el-checkbox>
       <el-checkbox v-model="newRowUpdatePriv">更新权限</el-checkbox>
       <el-checkbox v-model="newRowDeletePriv">删除权限</el-checkbox>
+      <el-button type="primary" @click="handleInsert">添加权限</el-button>
     </el-col>
-    <el-button type="primary" @click="handleInsert">添加权限</el-button>
     <el-table :data="listItems">
       <el-table-column property="tableName" label="表名"></el-table-column>
       <el-table-column label="查询权限">
@@ -57,6 +57,8 @@
   import globalConfig from "../../../config.js"
   import ErrorTip from '../../common/ErrorTip';
   //import gql from 'graphql-tag'
+  import api from '../../../common/api.js';
+
   export default {
     data() {
       return {
@@ -78,19 +80,15 @@
       this.fetchTableItems();
     },
     methods: {
-      fetchTableItems(){
+      async fetchTableItems(){
         let that = this;
-        this.$http.get(globalConfig.showTablesUrl, []).then((res) => {
-          if(res.status==200){
-            that.tableItems = res.body;
-          }else{
-            that.$message.error("获取表名列表失败,status:"+res.status);
-          }
-        }, (e) => {
-            console.log(e);
-            that.$message.error("获取表名列表失败,error:"+e.message);
-        });
-
+        let rsp = await api.showTables();
+        console.log("showTables",rsp);
+        if(rsp.status==200){
+            that.tableItems = rsp.data;
+        }else{
+            console.log("showTables error",rsp);
+        }
       },
       handleInsert(){
         let flag=1;
@@ -315,119 +313,39 @@
       handleSelectRole(selectedRoleId){
         this.fetchPrivsTableItems(selectedRoleId);
       },
-      fetchRoleItems() {
+      async fetchRoleItems() {
         let that = this;
-        /*
-        let query = gql`query($token:String!,$pageSize:Int!){
-          sysRoles(token:$token,pageSize:$pageSize){
-            count,
-            sysRoles{
-              id,
-              name,
-            }
-          }
+        let rsp = await api.getTableDatas("sys_roles");
+        if(rsp.status==200){
+          that.rolesItems = rsp.data.rows;
+        }else{
+          console.log("fetchRoleItems error:",rsp);
         }
-        `;
-
-        this.$apollo.query({
-            query: query,
-            variables: {
-                token:globalConfig.token,
-                pageSize:1000,
-            },
-            fetchPolicy: 'network-only',
-        }).then(res => {
-          console.log(res);
-            let respData = {};
-            let queryKey = "";
-            for(let key in res.data){
-                queryKey = key;
-                respData=res.data[queryKey];
-            }
-            let datas = respData[queryKey];
-            that.rolesItems=[];
-            for(let i in datas ){
-              that.rolesItems.push(datas[i]);
-            }
-        }).catch(err => {
-            console.log(err);
-            if(err["graphQLErrors"]!=undefined && err["graphQLErrors"][0]["message"]=="invalid token"){
-                console.log("invalid token");
-                this.setCookie("token","", 2*3600);
-                globalConfig.token = "";
-                this.$store.commit("userStatus","notlogin");
-                this.$router.push('/login');
-                //this.$router.push("/home");
-            }else{
-                console.log(err);
-                alert(err.message);
-            }
-        })
-        */
       },
-      fetchPrivsTableItems(roleId) {
+      async fetchPrivsTableItems(roleId) {
         let that = this;
-        /*
-        let query = gql`query($token:String!,$pageSize:Int!,$where:String!){
-          sysPrivsTables(token:$token,pageSize:$pageSize,where:$where){
-            count,
-            sysPrivsTables{
-              id,
-              roleid,
-              tableName,
-              tablePriv,
-              createdAt,
-              updatedAt
-            }
-          }
+        //let rsp = await api.showTables();
+        let rsp = await api.getTableDatas("sys_table_privs");
+        console.log("showTables:",rsp);
+        if(rsp.status==200){
+          //that.rolesItems = rsp.data.rows;
+          that.listItems=[];
+          rsp.data.rows.forEach(item=>{
+            console.log(item);
+            let newItem = {
+              id:item.id,
+              tableName:item.tableName,
+              Select:item.tablePriv.indexOf("Select")!=-1,
+              Insert:item.tablePriv.indexOf("Insert")!=-1,
+              Update:item.tablePriv.indexOf("Update")!=-1,
+              Delete:item.tablePriv.indexOf("Delete")!=-1,
+            };
+            that.listItems.push(newItem);
+          });
+          console.log("listItems:",that.listItems);
+        }else{
+          console.log("fetchRoleItems error:",rsp);
         }
-        `;
-
-        this.$apollo.query({
-            query: query,
-            variables: {
-                token:globalConfig.token,
-                pageSize:1000,
-                where:JSON.stringify({roleid:roleId}),
-            },
-            fetchPolicy: 'network-only',
-        }).then(res => {
-            console.log(res);
-            let respData = {};
-            let queryKey = "";
-            for(let key in res.data){
-                queryKey = key;
-                respData=res.data[queryKey];
-            }
-            let datas = respData[queryKey];
-            that.listItems=[];
-            for(let i in datas ){
-              let originItem = datas[i];
-              let newItem = {
-                id:originItem.id,
-                tableName:originItem.tableName,
-                Select:originItem.tablePriv.indexOf("Select")!=-1,
-                Insert:originItem.tablePriv.indexOf("Insert")!=-1,
-                Update:originItem.tablePriv.indexOf("Update")!=-1,
-                Delete:originItem.tablePriv.indexOf("Delete")!=-1,
-              };
-              that.listItems.push(newItem);
-            }
-        }).catch(err => {
-            console.log(err);
-            if(err["graphQLErrors"]!=undefined && err["graphQLErrors"][0]["message"]=="invalid token"){
-                console.log("invalid token");
-                this.setCookie("token","", 2*3600);
-                globalConfig.token = "";
-                this.$store.commit("userStatus","notlogin");
-                this.$router.push('/login');
-                //this.$router.push("/home");
-            }else{
-                console.log(err);
-                alert(err.message);
-            }
-        })
-        */
       }
     },
     components: {

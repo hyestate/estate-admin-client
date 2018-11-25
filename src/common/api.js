@@ -14,5 +14,9 @@ api.getTableDesc = async function (tableName){
     return await axios.get(`http://127.0.0.1:9001/descTable/${tableName}`);
 }
 
+//获取表头
+api.showTables = async function (){
+    return await axios.get(`http://127.0.0.1:9001/showTables`);
+}
 
 export default api;
