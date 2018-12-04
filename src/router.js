@@ -46,34 +46,33 @@ export default new Router({
           meta: { title: '基础表格' }
         },
         {
+          path: '/users',
+          component: resolve => require(['./components/page/users.vue'], resolve),
+          meta: { title: '用户管理',type:"users" }
+        },
+        {
           path: '/sys_users',
-          component: resolve => require(['./components/page/list.vue'], resolve),
-          meta: { title: '管理员管理',type:"sys_users" }
+          component: resolve => require(['./components/page/sysUsers.vue'], resolve),
         },
         {
           path: '/sys_roles',
-          component: resolve => require(['./components/page/list.vue'], resolve),
-          meta: { title: '角色管理',type:"sys_roles" }
+          component: resolve => require(['./components/page/sysRoles.vue'], resolve),
         },
         {
           path: '/sys_user_roles',
-          component: resolve => require(['./components/page/list.vue'], resolve),
-          meta: { title: '用户角色管理',type:"sys_user_roles" }
+          component: resolve => require(['./components/page/priv/sysUserRoles.vue'], resolve),
         },
         {
           path: '/sys_table_privs',
-          component: resolve => require(['./components/page/list.vue'], resolve),
-          meta: { title: '表权限管理',type:"sys_table_privs" }
+          component: resolve => require(['./components/page/priv/sysTablePrivs.vue'], resolve),
         },
         {
           path: '/sys_column_privs',
-          component: resolve => require(['./components/page/list.vue'], resolve),
-          meta: { title: '字段权限管理',type:"sys_column_privs" }
+          component: resolve => require(['./components/page/priv/sysColumnPrivs.vue'], resolve),
         },
         {
-          path: '/new_sys_table_privs',
-          component: resolve => require(['./components/page/priv/sysTablePrivs.vue'], resolve),
-          meta: { title: '字段权限管理',type:"sys_column_privs" }
+          path: '/mytest',
+          component: resolve => require(['./components/test/MyTest.vue'], resolve),
         },
         {
             path: '/404',

@@ -34,6 +34,7 @@
   import globalConfig from "../../../config.js"
   import ErrorTip from '../../common/ErrorTip';
   //import gql from 'graphql-tag'
+  import api from '../../../common/api.js';
 
   export default {
     data() {
@@ -230,105 +231,26 @@
         */
       },
       
-      fetchRoleItems() {
-        let that = this;
-        /*
-        let query = gql`query($token:String!,$pageSize:Int!){
-          sysRoles(token:$token,pageSize:$pageSize){
-            count,
-            sysRoles{
-              id,
-              name,
-            }
-          }
-        }
-        `;
+      async fetchRoleItems() {
+        let rsp = await api.getTableDatas("sys_roles");
+        console.log("rsp:",rsp);
 
-        this.$apollo.query({
-            query: query,
-            variables: {
-                token:globalConfig.token,
-                pageSize:1000,
-            },
-            fetchPolicy: 'network-only',
-        }).then(res => {
-          console.log(res);
-            let respData = {};
-            let queryKey = "";
-            for(let key in res.data){
-                queryKey = key;
-                respData=res.data[queryKey];
-            }
-            let datas = respData[queryKey];
-            that.rolesItems=[];
-            for(let i in datas ){
-              that.rolesItems.push(datas[i]);
-            }
-        }).catch(err => {
-            console.log(err);
-            if(err["graphQLErrors"]!=undefined && err["graphQLErrors"][0]["message"]=="invalid token"){
-                console.log("invalid token");
-                this.setCookie("token","", 2*3600);
-                globalConfig.token = "";
-                this.$store.commit("userStatus","notlogin");
-                this.$router.push('/login');
-                //this.$router.push("/home");
-            }else{
-                console.log(err);
-                alert(err.message);
-            }
-        })
-        */
+        if(rsp.status==200){
+            this.rolesItems=rsp.data.rows
+        }else{
+            console.log("error");
+        }
       },
-      fetchUserItems(){
-        let that = this;
-        /*
-        let query = gql`query($token:String!,$pageSize:Int!){
-          sysUsers(token:$token,pageSize:$pageSize){
-            count,
-            sysUsers{
-              id,
-              name,
-            }
-          }
-        }
-        `;
+      async fetchUserItems(){
+        let rsp = await api.getTableDatas("sys_users");
+        console.log("rsp:",rsp);
 
-        this.$apollo.query({
-            query: query,
-            variables: {
-                token:globalConfig.token,
-                pageSize:1000,
-            },
-            fetchPolicy: 'network-only',
-        }).then(res => {
-          console.log(res);
-          let respData = {};
-          let queryKey = "";
-          for(let key in res.data){
-              queryKey = key;
-              respData=res.data[queryKey];
-          }
-          let datas = respData[queryKey];
-          that.usersItems=[];
-          for(let i in datas ){
-            that.usersItems.push(datas[i]);
-          }
-        }).catch(err => {
-            console.log(err);
-            if(err["graphQLErrors"]!=undefined && err["graphQLErrors"][0]["message"]=="invalid token"){
-                console.log("invalid token");
-                this.setCookie("token","", 2*3600);
-                globalConfig.token = "";
-                this.$store.commit("userStatus","notlogin");
-                this.$router.push('/login');
-                //this.$router.push("/home");
-            }else{
-                console.log(err);
-                alert(err.message);
-            }
-        })
-        */
+        if(rsp.status==200){
+            this.usersItems=rsp.data.rows
+        }else{
+            console.log("error");
+        }
+        
 
       },
     },

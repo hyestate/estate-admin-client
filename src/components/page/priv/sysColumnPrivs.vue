@@ -60,6 +60,7 @@
   import globalConfig from "../../../config.js"
   import ErrorTip from '../../common/ErrorTip';
   //import gql from 'graphql-tag'
+  import api from '../../../common/api.js';
 
   export default {
     data() {
@@ -309,76 +310,41 @@
       handleSelectRole(selectedRoleId){
         this.fetchPrivsColumnItems(selectedRoleId);
       },
-      
-      fetchRoleItems() {
+      async fetchRoleItems() {
         let that = this;
-        /*
-        let query = gql`query($token:String!,$pageSize:Int!){
-          sysRoles(token:$token,pageSize:$pageSize){
-            count,
-            sysRoles{
-              id,
-              name,
-            }
-          }
+        let rsp = await api.getTableDatas("sys_roles");
+        if(rsp.status==200){
+          that.rolesItems = rsp.data.rows;
+        }else{
+          console.log("fetchRoleItems error:",rsp);
         }
-        `;
-
-        this.$apollo.query({
-            query: query,
-            variables: {
-                token:globalConfig.token,
-                pageSize:1000,
-            },
-            fetchPolicy: 'network-only',
-        }).then(res => {
-          console.log(res);
-            let respData = {};
-            let queryKey = "";
-            for(let key in res.data){
-                queryKey = key;
-                respData=res.data[queryKey];
-            }
-            let datas = respData[queryKey];
-            that.rolesItems=[];
-            for(let i in datas ){
-              that.rolesItems.push(datas[i]);
-            }
-        }).catch(err => {
-            console.log(err);
-            if(err["graphQLErrors"]!=undefined && err["graphQLErrors"][0]["message"]=="invalid token"){
-                console.log("invalid token");
-                this.setCookie("token","", 2*3600);
-                globalConfig.token = "";
-                this.$store.commit("userStatus","notlogin");
-                this.$router.push('/login');
-                //this.$router.push("/home");
-            }else{
-                console.log(err);
-                alert(err.message);
-            }
-        })
-        */
       },
-      fetchTableItems(){
+      
+      async fetchTableItems(){
         let that = this;
-        this.$http.get(globalConfig.showTablesUrl, []).then((res) => {
-          if(res.status==200){
-            that.tableItems = res.body;
-          }else{
-            that.$message.error("获取表名列表失败,status:"+res.status);
-          }
-        }, (e) => {
-            console.log(e);
-            that.$message.error("获取表名列表失败,error:"+e.message);
-        });
-
+        let rsp = await api.showTables();
+        console.log("showTables",rsp);
+        if(rsp.status==200){
+            that.tableItems = rsp.data;
+        }else{
+            console.log("showTables error",rsp);
+        }
       },
       handleSelectTable(selectedTable){
         this.fetchColumns(selectedTable);
         this.selectedColumnName="";
       },
-      fetchColumns(tableName){
+      async fetchColumns(tableName){
+        let rsp = await api.getTableDesc(tableName)
+        console.log("showTables",rsp)
+        if(rsp.status==200){
+          rsp.data.forEach(element => {
+            this.columnNameItems.push(element.column_name)
+          });
+        }else{
+            console.log("showTables error",rsp)
+        }
+        /*
         let that = this;
         this.$http.get(globalConfig.descTableUrl, {params:{table:tableName}}).then((res) => {
           if(res.status==200){
@@ -390,6 +356,7 @@
             console.log(e);
             that.$message.error("获取字段名列表失败,error:"+e.message);
         });
+        */
 
       },
       handleSelectColumn(selectedColumnName){

@@ -525,6 +525,7 @@ let configs={
   sys_user_roles:listConfig,
   sys_table_privs:listConfig,
   sys_column_privs:listConfig,
+  users:listConfig,
 };
 
 export default configs;

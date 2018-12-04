@@ -106,14 +106,17 @@
     //import gql from 'graphql-tag'
 
     export default {
+        name:"v-list",
         data() {
+            //pros属性直接就赋给this了,不需要data函数再进行赋值了
+            console.log(this.type);
             console.log(this.$route.meta);
-            let type = this.$route.meta.type;
-            let config = templateConfigs[type];
-            console.log("config:",type,config);
+            //let type = this.$route.meta.type;
+            let config = templateConfigs[this.type];
+            console.log("config:",this.type,config);
             return { 
-                type:type,
-                tableName:type,
+                //type:type,
+                tableName:this.type,
                 notAccess:false,
                 config:config,
                 searchelemt:[],
@@ -131,8 +134,12 @@
                 selectedOptions:[],
             };
         },
+        props: {
+            'type':String,
+        },
         
         async mounted() {
+            console.log(this.type);
             console.log(this.config);
             this._initSearchElemt();
             await this.fetchTableHeaders();
@@ -465,7 +472,7 @@
                 console.log(this.config);
 
                 let rsp = await api.getTableDatas(this.tableName);
-                console.log("rsp:",rsp);
+                console.log(this.tableName,"rsp:",rsp);
 
                 if(rsp.status==200){
                     that.pagination.total = rsp.data.count;

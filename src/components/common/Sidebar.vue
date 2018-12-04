@@ -50,40 +50,47 @@
                     },
                     {
                         icon: 'el-icon-lx-cascades',
-                        index: 'sys_users',
-                        title: '管理员管理'
+                        index: 'users',
+                        title: '用户管理'
                     },
                     {
-                        icon: 'el-icon-lx-cascades',
-                        index: 'sys_roles',
-                        title: '角色管理'
+                        icon: 'el-icon-lx-calendar',
+                        index: 'sys_privs',
+                        title: '系统权限相关',
+                        subs: [
+                            {
+                                icon: 'el-icon-lx-cascades',
+                                index: 'sys_users',
+                                title: '管理员管理'
+                            },
+                            {
+                                icon: 'el-icon-lx-cascades',
+                                index: 'sys_roles',
+                                title: '角色管理'
+                            },
+                            {
+                                icon: 'el-icon-lx-cascades',
+                                index: 'sys_table_privs',
+                                title: '表权限管理'
+                            },
+                            {
+                                icon: 'el-icon-lx-cascades',
+                                index: 'sys_column_privs',
+                                title: '字段权限管理'
+                            },
+                            {
+                                icon: 'el-icon-lx-cascades',
+                                index: 'sys_user_roles',
+                                title: '用户角色关系管理'
+                            },
+                            
+                        ]
                     },
                     {
-                        icon: 'el-icon-lx-cascades',
-                        index: 'sys_user_roles',
-                        title: '用户角色管理'
-                    },
-                    {
-                        icon: 'el-icon-lx-cascades',
-                        index: 'sys_table_privs',
-                        title: '表权限管理'
-                    },
-                    {
-                        icon: 'el-icon-lx-cascades',
-                        index: 'sys_column_privs',
-                        title: '字段权限管理'
-                    },
-                    {
-                        icon: 'el-icon-lx-cascades',
-                        index: 'new_sys_table_privs',
-                        title: '独立表权限管理'
-                    },
-
-                    {
-                        icon: 'el-icon-lx-copy',
-                        index: 'tabs',
-                        title: 'tab选项卡'
-                    },
+                                icon: 'el-icon-lx-copy',
+                                index: 'tabs',
+                                title: 'tab选项卡'
+                            },
                     {
                         icon: 'el-icon-lx-calendar',
                         index: '3',
