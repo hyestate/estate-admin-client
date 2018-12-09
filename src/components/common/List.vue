@@ -294,6 +294,7 @@
                 });
             },
             handleAction(index, row, path,action){
+                console.log("handleAction",index,row,path,action);
                 let id = row.id;
                 let that = this;
                 if(action=="delete"){
