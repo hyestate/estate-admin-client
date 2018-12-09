@@ -52,23 +52,23 @@ export default new Router({
         },
         {
           path: '/sys_users',
-          component: resolve => require(['./components/page/sysUsers.vue'], resolve),
+          component: resolve => require(['./components/priv/sysUsers.vue'], resolve),
         },
         {
           path: '/sys_roles',
-          component: resolve => require(['./components/page/sysRoles.vue'], resolve),
+          component: resolve => require(['./components/priv/sysRoles.vue'], resolve),
         },
         {
           path: '/sys_user_roles',
-          component: resolve => require(['./components/page/priv/sysUserRoles.vue'], resolve),
+          component: resolve => require(['./components/priv/sysUserRoles.vue'], resolve),
         },
         {
           path: '/sys_table_privs',
-          component: resolve => require(['./components/page/priv/sysTablePrivs.vue'], resolve),
+          component: resolve => require(['./components/priv/sysTablePrivs.vue'], resolve),
         },
         {
           path: '/sys_column_privs',
-          component: resolve => require(['./components/page/priv/sysColumnPrivs.vue'], resolve),
+          component: resolve => require(['./components/priv/sysColumnPrivs.vue'], resolve),
         },
         {
           path: '/mytest',

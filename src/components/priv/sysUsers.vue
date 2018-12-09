@@ -5,12 +5,12 @@
 </template>
 
 <script>
-    import vList from './List.vue';
     import templateConfigs from '../../templateConfigs';
     import globalConfig from "../../config.js"
-    import ErrorTip from '../common/ErrorTip';
     import api from '../../common/api.js';
-    //import gql from 'graphql-tag'
+
+    import ErrorTip from '../common/ErrorTip';
+    import vList from '../common/List.vue';
 
     export default {
         data() {

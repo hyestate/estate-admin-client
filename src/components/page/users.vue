@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import vList from './List.vue';
+    import vList from '../common/List.vue';
     import templateConfigs from '../../templateConfigs';
     import globalConfig from "../../config.js"
     import ErrorTip from '../common/ErrorTip';

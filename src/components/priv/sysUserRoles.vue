@@ -31,10 +31,10 @@
   </el-row>
 </template>
 <script>
-  import globalConfig from "../../../config.js"
-  import ErrorTip from '../../common/ErrorTip';
-  //import gql from 'graphql-tag'
-  import api from '../../../common/api.js';
+  import globalConfig from "../../config.js"
+  import api from '../../common/api.js';
+
+  import ErrorTip from '../common/ErrorTip';
 
   export default {
     data() {
