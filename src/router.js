@@ -59,6 +59,11 @@ export default new Router({
           meta: { title: '用户管理' }
         },
         {
+          path: '/newHouses',
+          component: resolve => require(['./components/page/newHouses.vue'], resolve),
+          meta: { title: '新楼盘管理' }
+        },
+        {
           path: '/sys_users',
           component: resolve => require(['./components/priv/sysUsers.vue'], resolve),
           meta: { title: '管理员管理' }

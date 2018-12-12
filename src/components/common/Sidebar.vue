@@ -54,6 +54,12 @@
                         title: '用户管理'
                     },
                     {
+                        icon: 'el-icon-lx-cascades',
+                        //router路径
+                        index: 'newHouses',
+                        title: '新楼盘管理'
+                    },
+                    {
                         icon: 'el-icon-lx-calendar',
                         index: 'sys_privs',
                         title: '系统权限相关',
