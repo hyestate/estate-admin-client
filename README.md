@@ -34,6 +34,6 @@ npm run test:unit
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### 访问
-从http://127.0.0.1:9001访问,这样不会出现跨域问题
+从http://127.0.0.1:9001访问,这样不会出现跨域问题(从localhost访问也会出现跨域)
 从http://127.0.0.1:9002也能访问到首页,但是请求9001端口的接口是出现跨域问题
 

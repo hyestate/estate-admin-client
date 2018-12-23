@@ -152,7 +152,6 @@
 </template>
 
 <script>
-    //import * as AjaxApi from '../../../../lib/AjaxApi';
     import templateConfigs from '../../templateConfigs';
 
     //import archiveCascader from '../../components/archiveCascader';
@@ -161,6 +160,7 @@
     import LightBox from 'vue-image-lightbox'
     import { ENUM_VALUE_DEFINITION } from 'graphql/language/kinds';
     import { until } from 'async';
+    import api from '../../common/api.js';
     
     export default {
         components: {
@@ -251,7 +251,7 @@
                 this.originItem = pickdatasHistory.originItem;
                 this.$store.commit("pickdatasHistory","");
               }else{
-                this.fetchItem();
+                  this.fetchItem();
               }
             }else{
               this.actionName="添加";
@@ -377,6 +377,7 @@
                 return {
                     id:id,
                     type:type,
+                    tableName:type,
                     config:config, 
                     route:config.route,                     //配置路由唯一name值
                     tabName:tabName,
@@ -520,10 +521,10 @@
                 return undefined;
             },
 
-            handleSubmit() {
+            async handleSubmit() {
                 let that = this;
                 console.log("form:",this.form);
-                this.$refs.rulesForm.validate((valid)=>{
+                this.$refs.rulesForm.validate(async (valid)=>{
                     if(valid) {
                         let postData = {};
                         
@@ -588,9 +589,26 @@
                                 this.$message.warning('未修改数据');
                                 return;
                             }
-                            
+                            console.log("update",this.tableName)
+                            let condition = {id:this.form.id}
+                            let rsp = await api.updateTableData(this.tableName,postData,condition)
+                            console.log("update",this.tableName,"rsp:",rsp)
+
+                            if(rsp.status==200){
+                                console.log(rsp)
+                            }else{
+                                console.log("error");
+                            }
                         }else{
-                            
+                            console.log(this.tableName)
+                            let rsp = await api.addTableData(this.tableName,postData)
+                            console.log(this.tableName,"rsp:",rsp)
+
+                            if(rsp.status==200){
+                                console.log(rsp)
+                            }else{
+                                console.log("error");
+                            }
                         }
                         
                     }else{
@@ -618,10 +636,22 @@
                 });
 
             },
-            fetchItem() {
+            async fetchItem() {
                 // 如果为修改，则通过路由获取修改的id
                 this.form.id = this.$route.query.id;
-                    
+                let tableName = this.$route.query.type;
+                let id = this.$route.query.id;
+                let rsp = await api.getTableDataById(tableName,id);
+                console.log(this.tableName,"rsp:",rsp);
+                //填充数据
+                this.form = rsp.data.row
+                console.log(this.form)
+                this.originItem = {}
+                for(let field in this.form){
+                    console.log(field)
+                    this.originItem[field] = this.form[field]
+                }
+                
                 
             },
             handleBeforeUpload(file) {

@@ -56,6 +56,10 @@
             <!-- 按钮 -->
             <el-col :span="6" class="pb15">
                 <el-button type="primary" @click="handleSearch">查询</el-button>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="6" class="pb15">
                 <el-button type="primary" @click="handleAdd">新增</el-button>
             </el-col>
         </el-row>
@@ -302,41 +306,8 @@
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type:'warning'
-                    }).then(()=>{
-                        console.log("确定",that.config.deleteGql);
-                        let mutation = this.config.tableName!=undefined?gql`${commGql.deleteGql}`:gql`${that.config.deleteGql}`;
-                        console.log("delete");
-                        this.$apollo.mutate({
-                            mutation: mutation,
-                            variables: {
-                                token:globalConfig.token,
-                                tableName:this.config.tableName,
-                                where:JSON.stringify({id:row.id}),
-                            }
-                        }).then(res => {
-                            //如果删除成功则将该数据从列表里面删除
-                            for(let key in res.data){
-                                if(res.data[key]==1){
-                                    for(let i=0;i<that.items.length;i++){
-                                        let item = that.items[i];
-                                        if(item.id==row.id){
-                                            that.items.splice(i,1);
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }).catch(err => {
-                            if(err["graphQLErrors"]!=undefined && err["graphQLErrors"][0]["message"]=="invalid token"){
-                                this.setCookie("token","", 2*3600);
-                                globalConfig.token = "";
-                                console.log("invalid token");
-                                this.$store.commit("userStatus","notlogin");
-                            }else{
-                                console.log(err);
-                                alert(err.message);
-                            }
-                        })
+                    }).then(async ()=>{
+                        let rsp = await api.delTableData(this.tableName,id)
                     }).catch((e)=>{
                         console.log(e);
                         // do nothing
@@ -478,6 +449,7 @@
                 if(rsp.status==200){
                     that.pagination.total = rsp.data.count;
                     that.items=rsp.data.rows;
+                    console.log(rsp)
                     console.log(that.items);
                 }else{
                     console.log("error");

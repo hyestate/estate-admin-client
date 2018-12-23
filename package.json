@@ -12,6 +12,7 @@
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "element-ui": "^2.4.11",
+    "graphql": "^14.0.2",
     "vue": "^2.5.17",
     "vue-fetch": "^1.1.2",
     "vue-image-lightbox": "^6.0.1",

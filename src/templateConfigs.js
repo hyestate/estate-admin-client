@@ -67,7 +67,7 @@ let listConfig = {
 }
 
 let newHousesConfig = {
-    title:'管理员管理',
+    title:'新楼盘',
     route:{
         name:'listConfig',
         path:'/admin/listConfig',
@@ -86,9 +86,10 @@ let newHousesConfig = {
     //todo categoryConfig做一个大的分类，modifyConfig里面根据category决定控件属于哪个分类 
     categoryConfig:['基础信息'],
     modifyConfig:[
-        {id:'1', title:'姓名', name:'name', ph:'', isMust:true, type:'input', checkType:'mobile', category:'基础信息', width:8, value:''},
-
-        {id:'2', title:'密码', name:'password', ph:'', isMust:true, type:'input',  category:'基础信息', width:17, value:""},
+        {id:'1', title:'楼盘名称', name:'name', ph:'', isMust:true, type:'input',  category:'基础信息', width:8, value:''},
+        {id:'2', title:'均价', name:'avgprice', ph:'', isMust:true, type:'input',  category:'基础信息', width:17, value:""},
+        {id:'3', title:'最小面积', name:'minarea', ph:'', isMust:true, type:'input',  category:'基础信息', width:17, value:""},
+        {id:'4', title:'最大面积', name:'maxarea', ph:'', isMust:true, type:'input',  category:'基础信息', width:17, value:""},
     ],
     //操作按钮配置
     actionConfig:[
